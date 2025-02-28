@@ -1,7 +1,10 @@
-FROM openjdk:21
+FROM openjdk:17
+
 WORKDIR /usrapp/bin
+
 ENV PORT 6000
-COPY target/Taller1-1.0-SNAPSHOT.jar /usrapp/bin/app.jar
-# Copia los archivos estáticos (HTML, CSS, JS, imágenes, etc.)
-COPY src/main/resources/static /usrapp/bin/static
-CMD ["java", "-cp", "app.jar", "com.eci.arep.SpringApplication"]
+
+COPY /target/classes /usrapp/bin/classes
+COPY /target/dependency /usrapp/bin/dependency
+
+CMD ["java","-cp","./classes:./dependency/*","com.eci.arep.SpringApplication"]
