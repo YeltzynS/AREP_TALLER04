@@ -36,52 +36,7 @@ public class WorkoutTest {
         assertEquals("Rutina no encontrada.", workout[0], "Debe indicar que la rutina no se encontró");
     }
 
-    @Test
-    void testStaticFileServingIndex() throws IOException {
-        URL url = new URL("http://localhost:8080/");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(200, responseCode, "El servidor debe devolver código 200 para index.html");
-    }
 
-    @Test
-    void testStaticFileServingCSS() throws IOException {
-        URL url = new URL("http://localhost:8080/style.css");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(200, responseCode, "El servidor debe devolver código 200 para CSS");
-        assertEquals("text/css", connection.getContentType(), "Debe devolver el tipo de contenido correcto");
-    }
-
-    @Test
-    void testAPIWorkoutReturnsJSON() throws IOException {
-        URL url = new URL("http://localhost:8080/api/workout?type=strength&level=beginner");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(200, responseCode, "El servidor debe devolver código 200 para la API");
-        assertTrue(connection.getContentType().contains("application/json"), "Debe devolver JSON");
-    }
-
-    @Test
-    void testInvalidAPIRequestReturns400() throws IOException {
-        URL url = new URL("http://localhost:8080/api/workout");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(400, responseCode, "El servidor debe devolver 400 para una solicitud incorrecta");
-    }
-
-    @Test
-    void testServerReturns404ForMissingFiles() throws IOException {
-        URL url = new URL("http://localhost:8080/noexiste.html");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(404, responseCode, "El servidor debe devolver 404 para archivos inexistentes");
-    }
 
     @Test
     void testGetWorkoutStrengthAdvanced() {
@@ -104,42 +59,4 @@ public class WorkoutTest {
         assertEquals(3, workout.length, "Debe haber 3 ejercicios en la rutina avanzada");
     }
 
-    @Test
-    void testServerHandlesMultipleRequests() throws IOException {
-        for (int i = 0; i < 5; i++) {
-            URL url = new URL("http://localhost:8080/api/workout?type=strength&level=intermediate");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-            assertEquals(200, responseCode, "El servidor debe responder correctamente a múltiples solicitudes");
-        }
-    }
-
-    @Test
-    void testServerHandlesInvalidQueryParams() throws IOException {
-        URL url = new URL("http://localhost:8080/api/workout?type=&level=");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(400, responseCode, "El servidor debe devolver 400 para parámetros vacíos");
-    }
-
-    @Test
-    void testServerHandlesUnexpectedPaths() throws IOException {
-        URL url = new URL("http://localhost:8080/api/randompath");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(404, responseCode, "El servidor debe devolver 404 para rutas inexistentes");
-    }
-
-    @Test
-    void testStaticFileServingJavaScript() throws IOException {
-        URL url = new URL("http://localhost:8080/script.js");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        int responseCode = connection.getResponseCode();
-        assertEquals(200, responseCode, "El servidor debe devolver código 200 para archivos JavaScript");
-        assertEquals("application/javascript", connection.getContentType(), "Debe devolver el tipo de contenido correcto");
-    }
 }

@@ -75,13 +75,4 @@ public class WorkoutPlanner {
         WORKOUTS.putIfAbsent(key, new ArrayList<>());
         WORKOUTS.get(key).add(exercise);
     }
-
-    public static boolean removeWorkout(String type, String level, String exercise) {
-        String key = type + "-" + level;
-        List<String> exercises = WORKOUTS.get(key);
-        if (exercises != null) {
-            return exercises.remove(exercise);
-        }
-        return false;
-    }
 }

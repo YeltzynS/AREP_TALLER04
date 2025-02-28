@@ -6,6 +6,8 @@ import java.util.*;
 public class Request {
     private final String path;
     private final Map<String, String> queryParams;
+    private final String method;
+    private String body;
 
     public Request(BufferedReader reader) throws IOException {
         String requestLine = reader.readLine();
@@ -14,6 +16,7 @@ public class Request {
         }
 
         String[] parts = requestLine.split(" ");
+        this.method = parts[0]; // Obtener el método HTTP (GET, POST, etc.)
         String fullPath = parts.length > 1 ? parts[1] : "/";
         String[] pathAndQuery = fullPath.split("\\?");
         this.path = pathAndQuery[0];
@@ -28,13 +31,43 @@ public class Request {
                 }
             }
         }
+
+        // Leer encabezados para obtener Content-Length
+        int contentLength = 0;
+        String line;
+        while (!(line = reader.readLine()).isEmpty()) {
+            if (line.startsWith("Content-Length:")) {
+                contentLength = Integer.parseInt(line.split(":")[1].trim());
+            }
+        }
+
+        // Leer el cuerpo de la solicitud si es POST
+        if ("POST".equals(method) && contentLength > 0) {
+            char[] bodyChars = new char[contentLength];
+            reader.read(bodyChars, 0, contentLength);
+            this.body = new String(bodyChars);
+        } else {
+            this.body = "";
+        }
     }
 
     public String getPath() {
         return path;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
     public String getValues(String key) {
         return queryParams.getOrDefault(key, "");
+    }
+
+    public String getBody() {
+        return body; // Devuelve el cuerpo de la solicitud
+    }
+
+    public Map<String, String> getQueryParams() {
+        return queryParams;
     }
 }
