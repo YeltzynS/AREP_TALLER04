@@ -214,7 +214,7 @@ Se incluyen pruebas automatizadas para garantizar la funcionalidad del servidor 
 ## Test
 ### Unit Test
 
-![tests.png](src/main/resources/img/test.png)
+![tests.png](src/main/resources/img/tests.png)
 
 
 
