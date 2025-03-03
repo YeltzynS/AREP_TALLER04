@@ -159,14 +159,7 @@ CMD ["java","-cp","./classes:./dependency/*","com.edu.eci.arep.SpringApplication
 ![puertos.png](src/main/resources/img/puertos.png)
 
 - Accede a la aplicación en el navegador:
-  
-![img_3.png](src/main/resources/webroot/public/img/img_3.png)
 
-![img_4.png](src/main/resources/webroot/public/img/img_4.png)
-
-![img_5.png](src/main/resources/webroot/public/img/img_5.png)
-
-- Upload to docker hub
   
 ![34000.png](src/main/resources/img/34000.png)
 ![34001.png](src/main/resources/img/34001.png)
