@@ -1,176 +1,248 @@
+# AREP-Lab4
+# Taller sobre modularización con virtualización e Introducción a Docker
 
-# Arquitecturas de Servidores de Aplicaciones, Meta protocolos de objetos, Patrón IoC, Reflexión
+## Resumen
 
-Este proyecto es un servidor HTTP que permite a los usuarios obtener rutinas de entrenamiento dinámicas basadas en tipo (fuerza, cardio, flexibilidad) y nivel (principiante, intermedio, avanzado). También permite servir archivos estáticos como HTML, CSS y JavaScript.
+El taller consiste en crear una pequeña aplicación web utilizando **Spring**. Una vez que tengamos esta aplicación, procederemos a construir un contenedor Docker para la aplicación y desplegarla y configurarla en nuestra máquina local. Luego, crearemos un repositorio en **DockerHub** y subiremos la imagen al repositorio. Finalmente, crearemos una máquina virtual en **AWS**, instalaremos Docker y desplegaremos el contenedor que acabamos de crear.
 
-## Estructura del proyecto
+## Empezando
 
+Estas instrucciones te guiarán para obtener una copia del proyecto y ejecutarlo en tu máquina local para fines de desarrollo y pruebas.
+
+### Prerrequisitos
+
+Para ejecutar este proyecto, debes tener Java instalado en tu sistema. Sigue los pasos a continuación para instalar Java y Maven (que se utiliza para gestionar las dependencias).
+
+1. **Instalar Java:**
+   - Descarga e instala el JDK de Java (versión 11 o superior). Puedes seguir las instrucciones en el [sitio web oficial de Java](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html).
+
+2. **Instalar Maven:**
+   - Maven se utiliza para gestionar las dependencias del proyecto. Puedes descargar e instalar Maven desde [aquí](https://maven.apache.org/download.cgi).
+   - Después de la instalación, verifica si Maven está correctamente instalado ejecutando:
+     ```bash
+     mvn -v
+     ```
+     Esto debería mostrar la versión instalada de Maven.
+
+3. **Instalar Docker:**
+   - Descarga e instala Docker desde [aquí](https://www.docker.com/products/docker-desktop).
+
+### Instalación
+
+> [!NOTA]
+> Debes realizar los siguientes pasos desde una terminal Bash o PowerShell en Windows.
+
+> [!IMPORTANTE]
+> Asegúrate de que Docker Desktop esté en ejecución antes de continuar.
+
+Para configurar tu entorno de desarrollo:
+
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/YeltzynS/AREP_TALLER04.git
 ```
-├── src/
-│   ├── main
-│   │   ├── java/com/eci/arep/httpserver
-│   │   │   ├── HttpServer.java         
-│   │   │   ├── WorkoutPlanner.java
-|   |   |   |--Request.java
-|   |   |   |--Response.java 
-│   │   ├── resources/
-│   │   │   ├── img
-│   │   │   │   ├── pagina.png             
-│   │   │   │   ├── Pruebas.png
-│   │   │   │   ├── resultado.png                           
-│   │   │   ├── static
-│   │   │   │   ├── index.html           
-│   │   │   │   ├── style.css            
-│   │   │   │   ├── script.js            
-│   │   │   │   ├── fondo.jpg            
-│   ├── test
-│   │   ├── java
-│   │   │   ├──WorkoytTest.java  
-├── README.md
-|__ .gitignore
-|__ LICENSE                        
-└── pom.xml
-```                     
-
-## Para comenzar
-
-Sigue estas instrucciones para obtener una copia del proyecto y ponerlo en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas.
-
-### Prerequisitos
-
-Asegúrate de tener las siguientes herramientas instaladas en tu sistema:
-
-- [Java 8 o superior](https://www.oracle.com/java/technologies/javase-downloads.html)
-- [Apache Maven](https://maven.apache.org/)
-
-Para verificar las versiones instaladas:
-
+2. **Navega al directorio del proyecto:**
 ```bash
-java -version
-mvn -version
+cd AREP_TALLER04
 ```
-
-### Intalación
-
-Sigue los pasos a continuación para configurar el entorno de desarrollo:
-
-1. Clona este repositorio en tu máquina local, probarlo en power shell o en el ide:
-
+3. **Compila el proyecto con Maven:**
 ```bash
-git clone (https://github.com/YeltzynS/AREP_TALLER02.git)>
+mvn clean install
 ```
 
-2. Navega al directorio del proyecto:
 
-```bash
-cd AREP_TALLER02
+.
+
+### Servidor de Archivos Estáticos
+- Sirve HTML, CSS, JS, imágenes y más desde un directorio configurable (staticFilesLocation).
+- Soporta múltiples tipos de contenido (text/html, application/javascript, image/png, etc.).
+
+###  Despliegue en AWS EC2
+- Configurado para desplegarse en instancias EC2.
+- Reglas del grupo de seguridad habilitadas para permitir el acceso a través del puerto 42000.
+
+
+### Project Structure
+```Bash
+AREP-TALLER04/
+│── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── com/edu/eci/arep/Annotation/
+│   │   │   │   ├── GetMapping.java
+│   │   │   │   ├── PostMapping.java
+│   │   │   │   ├── RequestBody.java
+│   │   │   │   ├── RequestParam.java
+│   │   │   │   ├── RestController.java
+│   │   │   ├── com/edu/eci/arep/Controller/
+│   │   │   │   ├── GreetingController.java
+│   │   │   │   ├── WorkoutController.java
+│   │   │   ├── com/edu/eci/arep/Server/
+│   │   │   │   ├── HttpServer.java
+│   │   │   │   ├── Request.java
+│   │   │   │   ├── Response.java
+│   │   │   │   ├── WorkoutPlanner.java
+│   │   │   ├── SpringApplication.java
+│   ├── resources/
+│   │   ├── img
+│   │   ├── static
+│   │   │   │── fondo.jpg
+│   │   │   │── style.css
+│   │   │   │── script.js
+│   │   │   ├── index.html
+│── pom.xml
+│── README.md
+│── Dockerfile
+│── docker-compose.yml
 ```
 
-3. Ejecuta el servidor HTTP:
 
-```bash
-mvn exec:java 
+## Concurrencia
+
+```Java
+public class HttpServer {
+
+    private static final String STATIC_FOLDER = "src/main/resources/static";
+    private static final Map<String, BiFunction<Request, Response, String>> routes = new HashMap<>();
+    private static final Map<String, BiFunction<Request, Response, String>> postRoutes = new HashMap<>();
+    private static ServerSocket serverSocket;
+
+    public static void start(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
+        System.out.println("Servidor iniciado en el puerto " + port + "...");
+
+        
+        registerControllers();
+
+        while (true) {
+            Socket clientSocket = serverSocket.accept();
+            
+            new Thread(() -> {
+                try {
+                    handleRequest(clientSocket);
+                } catch (Exception e) {
+                    System.err.println("Error al manejar la solicitud: " + e.getMessage());
+                } finally {
+                    try {
+                        clientSocket.close();
+                    } catch (IOException e) {
+                        System.err.println("Error al cerrar la conexión: " + e.getMessage());
+                    }
+                }
+            }).start();
+        }
+    }
 ```
 
-4. Accede al servidor desde tu navegador 
-```bash
-http://localhost:8080
+
+## Docker
+- Configure the Dockerfile:
+```CMD
+FROM openjdk:17
+
+WORKDIR /usrapp/bin
+
+ENV PORT 35000
+
+COPY /target/classes /usrapp/bin/classes
+COPY /target/dependency /usrapp/bin/dependency
+
+CMD ["java","-cp","./classes:./dependency/*","com.edu.eci.arep.SpringApplication"]
 ```
-#  Web Framework Development for REST Services and Static File Management
+- Crea la imagen de Docker:
+  
+![docker.png](src/main/resources/img/docker.png)
+![docker-images.png](src/main/resources/img/docker-images.png)
 
-1. GET Static Method for REST Services:
-Implement a get() method that allows developers to define REST services using lambda functions.
-Example Usage:
-get("/hello", (req, res) -> "hello world!");
-This feature will enable developers to define simple and clear routes within their applications, mapping URLs to specific lambda expressions that handle the requests and responses.
+- Ejecuta el contenedor de Docker:
+  
+![puertos.png](src/main/resources/img/puertos.png)
 
-2. Query Value Extraction Mechanism:
-Develop a mechanism to extract query parameters from incoming requests and make them accessible within the REST services.
-Example Usage:
-get("/hello", (req, res) -> "hello " + req.getValues("name"));
-This functionality will facilitate the creation of dynamic and parameterized REST services, allowing developers to easily access and utilize query parameters within their service implementations.
+- Accede a la aplicación en el navegador:
+  
+![img_3.png](src/main/resources/webroot/public/img/img_3.png)
 
- Probando con la Url 
-```bash
-http://localhost:8080/greet?name=(PonTuNombre)
-```
-### Lo que debe salir
-![image](src/main/resources/img/saludo.png)
+![img_4.png](src/main/resources/webroot/public/img/img_4.png)
 
- Probando con la Url 
-```bash
-http://localhost:8080/hello
-```
-### Lo que debe salir
-![image](src/main/resources/img/saludo2.png)
+![img_5.png](src/main/resources/webroot/public/img/img_5.png)
 
-Probando con la Url 
-```bash
-http://localhost:8080/api?name=(Tu-Nombre)
-```
-### Lo que debe salir
-![image](src/main/resources/img/api.png)
+- Upload to docker hub
+  
+![34000.png](src/main/resources/img/34000.png)
+![34001.png](src/main/resources/img/34001.png)
+![34002.png](src/main/resources/img/34002.png)
+
+## DockerHub
+
+- Creación del repositorio
+![docker-repository.png](src/main/resources/img/docker-repository.png)
+- Sube la imagen a DockerHub:
+![docker-hub.png](src/main/resources/img/docker-hub.png)
 
 
-3. Static File Location Specification:
-Introduce a staticfiles() method that allows developers to define the folder where static files are located.
-Example Usage:
-staticfiles("webroot/public");
-The framework will then look for static files in the specified directory, such as target/classes/webroot/public, making it easier for developers to organize and manage their application's static resources.
-# Workout Planner
+## AWS
+1. Accede a la máquina virtual:
 
-Esta es la página principal en la cual podras ver que rutina se amolda a lo que tu quieres.
-Elige el tipo de entrenamiento que quieres y el nivel en el que te encuentras.
-![image](src/main/resources/img/pagina.png)
+![aws.png](src/main/resources/img/aws.png)
 
-### Para probar
-Probando con la Url 
-```bash
-http://localhost:8080/api/workout?type=running&level=beginner&name=(TuNombre)
-```
-### Lo que debe salir
-![image](src/main/resources/img/rutinaprincipiante.png)
+2. Instalar Docker
+
+![instalar.png](src/main/resources/img/instalar.png)
 
 
-### Tambien puedes probar
-Probando con la Url 
-```bash
-http://localhost:8080/api/workout?type=strength&level=intermediate&name=(TuNombre)
-```
-### Lo que debe salir
-![image](src/main/resources/img/rutinainter.png)
+3. Ejecuta el contenedor de Docker:
+
+![docker-ps-aws.png](src/main/resources/img/docker-ps-aws.png)
+
+4. Abre el puerto 42000 en el grupo de seguridad:
+
+![puerto-42000.png](src/main/resources/img/puerto-42000.png)
+
+5. Accede a la aplicación
+
+![sirveaws.png](src/main/resources/img/sirveaws.png)
 
 
-Y el resultado sería la rutina que te recomiendan, como lo puede ser esta:
-![image](src/main/resources/img/resultado.png)
-### Pruebas
+## Videos 
+[Ver video](src/main/resources/videos/awsvideo.mp4)
+[Ver video](src/main/resources/videos/awsvideo2.mp4)
+[Ver video](src/main/resources/videos/awsvideo3.mp4)
 
-Las pruebas de extremo a extremo verifican el comportamiento general del servidor, incluyendo la API y el servicio de archivos estáticos. Ejecuta las pruebas con:
+### Running the Tests
+Se incluyen pruebas automatizadas para garantizar la funcionalidad del servidor y la aplicación web.
 
-```bash
-mvn test
-```
-Deberia salir esto: 
-![image](src/main/resources/img/Pruebas.png)
-![image](src/main/resources/img/pruebas2.png)
-![image](src/main/resources/img/tests.png)
+> Debes probar en una terminal Bash o PowerShell diferente en Windows.
+1. **Ejecutar pruebas unitarias:**
+   ```bash
+   mvn test
+   ```
+   Esto ejecutará todas las pruebas unitarias y mostrará los resultados en la terminal.
+
+## Test
+### Unit Test
+
+![test.png](src/main/resources/img/test.png)
 
 
-## Se construyo con
-
-- [Java SE](https://www.oracle.com/java/technologies/javase-downloads.html) - Lenguaje de programación
-- [Maven](https://maven.apache.org/) - Gestión de dependencias
 
 
-## Autor
+### Construido Con
+Java: El lenguaje de programación utilizado.
 
-* **Yeltzyn Kadyr Sierra Aranguren** - *AREP_TALLER02* - [Repositorio](https://github.com/YeltzynS/AREP_TALLER02) 
+Maven: Herramienta de gestión de dependencias y construcción.
 
-## License
+JUnit: Framework de pruebas.
 
-Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICENSE.md](LICENSE.md) para más detalles.
-## Versión
-Versión 1.0
-=======
-# AREP_TALLER02
->>>>>>> 9f8274149c048b8c77dc238de9f3426b88429198
+Mockito: Framework de simulación para pruebas unitarias.
+
+Docker: Herramienta de contenedorización.
+
+### Author
+- Yeltzyn Sierra
+  
+### License
+This project is licensed under the MIT license: see the LICENSE.md file for details.
+
+
+
+

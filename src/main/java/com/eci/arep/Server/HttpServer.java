@@ -23,7 +23,20 @@ public class HttpServer {
 
         while (true) {
             Socket clientSocket = serverSocket.accept();
-            handleRequest(clientSocket);
+            // Crear un nuevo hilo para manejar la solicitud
+            new Thread(() -> {
+                try {
+                    handleRequest(clientSocket);
+                } catch (Exception e) {
+                    System.err.println("Error al manejar la solicitud: " + e.getMessage());
+                } finally {
+                    try {
+                        clientSocket.close();
+                    } catch (IOException e) {
+                        System.err.println("Error al cerrar la conexión: " + e.getMessage());
+                    }
+                }
+            }).start();
         }
     }
 
@@ -103,21 +116,15 @@ public class HttpServer {
             }
         } catch (IOException e) {
             System.err.println("Error al manejar la solicitud: " + e.getMessage());
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                System.err.println("Error al cerrar la conexión: " + e.getMessage());
-            }
         }
     }
 
     private static void serveStaticFile(Response response, String filePath) throws IOException {
         if (filePath.equals("/")) filePath = "/index.html";
-    
+
         Path file = Paths.get(STATIC_FOLDER, filePath).toAbsolutePath();
-    
-        if (Files.exists(file) && !Files.isDirectory(file)) { 
+
+        if (Files.exists(file) && !Files.isDirectory(file)) {
             String contentType = getContentType(filePath);
             byte[] fileContent = Files.readAllBytes(file);
             response.sendFile(fileContent, contentType);
